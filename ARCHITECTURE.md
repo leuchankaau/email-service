@@ -11,6 +11,7 @@ Arhitecture uses servless patter with use of AWS API Gateway, Lambda and SQS.
  * [E.1-E.3 Failed Delivery Handling](#Failed-Delivery-Handling) 
  
  **[Decisions](#Decisions) **
+ 
  **[New Provider](#New-Provider) **
  
 ![alt text](https://github.com/leuchankaau/email-service/blob/master/EmailService.png)
@@ -37,7 +38,7 @@ Pull message from Provider error queues, update with info that it failed for pro
 5. Storing vs not storing content of message in DB  - not implmented as of now
 6. Lamda for monitoring and notfication in case if error queue get messages.
 ## New Provider
-You need to complete *3 steps* to add new provider:
+You need to complete **3 steps** to add new provider:
 1. Implment prrovider flow with SQS and DLQ for provider message, and lambda integration component.
-2. *Update Failed Delivery handling* to add new provider message, otherwise infinite error message can start generate huge cost.
+2. **Update Failed Delivery handling** to add new provider message, otherwise infinite error message can start generate **huge cost**.
 3. Change router to enable routing between 3 providers  
