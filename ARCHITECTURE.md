@@ -10,9 +10,9 @@ Arhitecture uses servless patter with use of AWS API Gateway, Lambda and SQS.
  * [2.1-2.4 and 3.1-3.4 Processing message by providers](#Processing-message-by-providers) 
  * [E.1-E.3 Failed Delivery Handling](#Failed-Delivery-Handling) 
  
- **[Decisions](#Decisions) **
+[**Decisions**](#Decisions)
  
- **[New Provider](#New-Provider) **
+[ **New Provider**](#New-Provider) 
  
 ![alt text](https://github.com/leuchankaau/email-service/blob/master/EmailService.png)
 
