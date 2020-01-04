@@ -36,7 +36,7 @@ Pull message from Provider error queues, update with info that it failed for pro
 3. Load balancer vs Lambda router.
 4. Tracking current status of message in DB - not implmented as of now
 5. Storing vs not storing content of message in DB  - not implmented as of now
-6. Lamda for monitoring and notfication in case if error queue get messages.
+6. Lamda for monitoring and notfication in case if error queue get messages - not implmented as of now
 ## New Provider
 You need to complete **3 steps** to add new provider:
 1. Implment prrovider flow with SQS and DLQ for provider message, and lambda integration component.
