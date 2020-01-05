@@ -12,7 +12,11 @@ Arhitecture uses servless patter with use of AWS API Gateway, Lambda and SQS.
  
 [**Decisions**](#Decisions)
  
+[ **Security**](#Security) 
+ 
 [ **New Provider**](#New-Provider) 
+
+[ **Cost**](#Cost) 
  
 ![alt text](https://github.com/leuchankaau/email-service/blob/master/EmailService.png)
 
@@ -34,11 +38,19 @@ Pull message from Provider error queues, update with info that it failed for pro
 1. Servless vs standart microservice
 2. API Gateway input validation vs Lambda validation.
 3. Load balancer vs Lambda router.
-4. Tracking current status of message in DB - not implmented as of now
-5. Storing vs not storing content of message in DB  - not implmented as of now
-6. Lamda for monitoring and notfication in case if error queue get messages - not implmented as of now
+4. Tracking current status of message in DB - TODO
+5. Storing vs not storing content of message in DB  - TODO
+6. Lamda for monitoring and notfication in case if error queue get messages - TODO
 ## New Provider
 You need to complete **3 steps** to add new provider:
 1. Implment prrovider flow with SQS and DLQ for provider message, and lambda integration component.
 2. **Update Failed Delivery handling** to add new provider message, otherwise infinite error message can start generate **huge cost**.
 3. Change router to enable routing between 3 providers  
+## Security
+Methods should allow check message status. Encrypting messages in queues. 
+## Cost
+Lambda cost is $0.20 per 1M request and $0.000016667 for every GB-second.
+
+EC2 t3.micro of $0.0146 per hour, which is 2o$ for 2 instances (to minimum allow scalability) per month.  
+
+
