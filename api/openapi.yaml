@@ -1,117 +1,101 @@
-var https = require('https');
-var querystring = require('querystring');
-const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
-
-exports.handler = async (event) => {
-    var form = {
-    from:event.from,
-    to: event.to.join(),
-    cc: event.cc.join(),
-    bcc: event.bcc.join(),
-    subject: event.subject,
-    text: event.body
-};
-
-var formData = querystring.stringify(form);
-var contentLength = formData.length;
-
-console.log('formData:', formData);
-return new Promise((resolve, reject) => {
-        const options = {
-            host: 'api.mailgun.net',
-            path: '/v3/sandboxddf393cff207464c850bf749f0f60432.mailgun.org/messages',
-            port: 443,
-            method: 'POST',
-            headers : {
-      'Content-Length': contentLength,
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': make_base_auth(process.env.MAILGUN_API_KEY)
-            }
-        };
-          const req = https.request(options, (res) => {
-          console.log('res statusCode:', res.statusCode);
-              if(res.statusCode < 200 || res.statusCode > 299){
-                 res.on('data', function (errorData) {
-                      console.log('errorData: ' + errorData);
-                 if (res.statusCode == 400){//if Bad Request save it to Dynamo DB
-                      event.error = JSON.parse(errorData);
-                      event.state = 'BAD_REQUEST';
-                      event.statusCode = res.statusCode;
-                      saveItem(event);
-                      resolve('Success');
-                 } else {
-                      reject(errorData);
-                 }
-                 });
-              } else {
-                  resolve('Success');
-              }
-        });
-
-        req.on('error', (e) => {
-          console.log('error:',e);
-          reject(e.message);
-        });
-
-        // send the request
-
-        req.write(formData);
-        req.end();
-    });
-
-};
-function make_base_auth( apikey) {
-  var tok = 'api:' + apikey;
-  var hash = Buffer.from(tok).toString('base64');
-  return "Basic " + hash;
-}
-function saveItem(event) {
-  return new Promise(resolve => {
-    var params = {
-            TableName: 'emails',
-            Item: {
-                'uuid': event.uuid,
-                'statusCode': event.statusCode,
-                'error': JSON.stringify(event.error),
-                'event': JSON.stringify(event)
-            }
-        };
-
-        ddb.put(params, function(err, data) {
-
-            if (err) {
-                console.log(err);
-                return err;
-            }
-            else {
-               return data;
-            }
-        });
-  });
-}
-function saveItem(event) {
-  return new Promise(resolve => {
-    var params = {
-            TableName: 'emails',
-            Item: {
-                'uuid': event.uuid,
-                'statusCode': event.statusCode,
-                'state': event.state,
-                'errors': event.errors,
-                'event': JSON.stringify(event)
-            }
-        };
-
-        ddb.put(params, function(err, data) {
-
-            if (err) {
-                console.log(err);
-                return err;
-            }
-            else {
-               return data;
-            }
-        });
-  });
-}
+openapi: 3.0.0
+info:
+  title: Email service abstraction API
+  description: Email service API to provide an abstraction between different email
+    service providers. Current supported providers Mailgun and SendGrid.
+  contact:
+    email: tolitest@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.1
+servers:
+- url: https://virtserver.swaggerhub.com/ToliTest/EmailService/1.0.0
+  description: Using SwaggerHub API Auto Mocking during contract desing.
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /email:
+    post:
+      tags:
+      - developers
+      summary: Sends email to customer
+      description: Sends email to service, service will make sure that one of providers
+        will trigger email to customer.
+      operationId: sendEmail
+      requestBody:
+        description: Sends email to recipients
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+      responses:
+        "200":
+          description: Email queued
+        "201":
+          description: Email queued
+        "400":
+          description: invalid input, object invalid
+components:
+  schemas:
+    Email:
+      required:
+      - body
+      - from
+      - subject
+      - to
+      type: object
+      properties:
+        from:
+          maxLength: 250
+          minLength: 4
+          type: string
+          format: email
+          example: your@email.com
+        to:
+          maximum: 100
+          minimum: 1
+          type: array
+          example:
+          - your@email.com
+          - your@email.com
+          items:
+            maxLength: 250
+            minLength: 4
+            type: string
+            format: email
+        cc:
+          maximum: 100
+          type: array
+          example:
+          - your@email.com
+          - your@email.com
+          items:
+            maxLength: 250
+            minLength: 4
+            type: string
+            format: email
+        bcc:
+          maximum: 100
+          type: array
+          example:
+          - your@email.com
+          - your@email.com
+          items:
+            maxLength: 250
+            minLength: 4
+            type: string
+            format: email
+        subject:
+          maxLength: 250
+          minLength: 1
+          type: string
+          example: Subject!
+        body:
+          maxLength: 1000
+          minLength: 1
+          type: string
+          example: Body!
