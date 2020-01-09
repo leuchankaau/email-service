@@ -34,7 +34,7 @@ exports.handler = async (records) => {
                 res.on('data', function (errorData) {
                     console.log('errorData: ' + errorData);
                     if (res.statusCode == 400) { //if Bad Request save it to Dynamo DB
-                        event.error = JSON.parse(errorData);
+                        event.errors = JSON.parse(errorData);
                         event.state = util.BAD_REQUEST;
                         event.statusCode = res.statusCode;
                         util.saveItemDB(event);
