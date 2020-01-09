@@ -6,7 +6,46 @@
 	},
 	"item": [
 		{
-			"name": "https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/email",
+			"name": "Valid request Sendgrid request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"from\": \"your@email.com\",\n  \"to\": [\n    \"your@email.com\"\n  ],\n  \"cc\": [\n    \"your@email.com\"\n  ],\n  \"bcc\": [\n    \"your@email.com\"\n  ],\n  \"subject\": \"Subject!\",\n  \"body\": \"Body!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/email",
+					"protocol": "https",
+					"host": [
+						"jk8ncbovj6",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missibg required to",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -19,7 +58,124 @@
 				],
 				"body": {
 					"mode": "raw",
+					"raw": "{\n  \"from\": \"your@email.com\",\n  \"cc\": [\n    \"your@email.com\"\n  ],\n  \"bcc\": [\n    \"your@email.com\"\n  ],\n  \"subject\": \"Subject!\",\n  \"body\": \"Body!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/email",
+					"protocol": "https",
+					"host": [
+						"jk8ncbovj6",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Valid request Sendgrid request without bcc and cc",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
 					"raw": "{\n  \"from\": \"your@email.com\",\n  \"to\": [\n    \"your@email.com\"\n  ],\n  \"cc\": [\n    \"your@email.com\"\n  ],\n  \"bcc\": [\n    \"your@email.com\"\n  ],\n  \"subject\": \"Subject!\",\n  \"body\": \"Body!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/email",
+					"protocol": "https",
+					"host": [
+						"jk8ncbovj6",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing subject",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"from\": \"your@email.com\",\n  \"to\": [\n    \"your@email.com\"\n  ],\n  \"cc\": [\n    \"your@email.com\"\n  ],\n  \"bcc\": [\n    \"your@email.com\"\n  ],\n  \"body\": \"Body!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/email",
+					"protocol": "https",
+					"host": [
+						"jk8ncbovj6",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing body",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"from\": \"your@email.com\",\n  \"to\": [\n    \"your@email.com\"\n  ],\n  \"cc\": [\n    \"your@email.com\"\n  ],\n  \"bcc\": [\n    \"your@email.com\"\n  ],\n  \"subject\": \"Subject!\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
