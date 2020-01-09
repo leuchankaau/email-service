@@ -53,7 +53,7 @@ function sendMessage(event, queue_url, context) {
         } else {
             console.log('data:', data.MessageId);
             saveItemDB(event);
-            context.done(null, JSON.stringify({uuid: event.uuid,provider:event.provider,state:event.state})); // SUCCESS
+            context.done(null, {uuid: event.uuid,provider:event.provider,state:event.state}); // SUCCESS
         }
     });
 }
