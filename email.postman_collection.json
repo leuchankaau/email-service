@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1b82a3a5-ce39-41f0-822e-6c97ca0f3db2",
+		"_postman_id": "9b5f9b35-61a6-4b9f-a740-dbf1e5d08c89",
 		"name": "email",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -45,7 +45,7 @@
 			"response": []
 		},
 		{
-			"name": "Missibg required to",
+			"name": "Missing required to",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -195,6 +195,35 @@
 					"path": [
 						"test",
 						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Email status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/email?uuid=a95d7190-b95d-49fd-8290-db46dfd4934e",
+					"protocol": "https",
+					"host": [
+						"jk8ncbovj6",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"email"
+					],
+					"query": [
+						{
+							"key": "uuid",
+							"value": "a95d7190-b95d-49fd-8290-db46dfd4934e"
+						}
 					]
 				}
 			},
