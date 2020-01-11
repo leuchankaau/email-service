@@ -26,7 +26,7 @@ Lambda  takes responsibility of routing between providers, there is a bit of mix
 Lambda routes message based on environment variables between providers queues. Load balancer can also be used for routing and would be much more elegant, but we avoid it to reduce complexity.
 
 ## Processing message by providers
-Message pulled by lambda and sent to provider, if successful response acknowledge delivery, if error push back to queue and retry in time configure in queue.After several retries queue will push it to DLQ.
+Message pulled by lambda and sent to provider, if successful response acknowledge delivery, if error push back to queue and retry (time configured in a queue).After several retries queue will push it to dead letter queue DLQ. DLQ is undelivered-message queue, is a holding queue for messages that failed delivery to their destination, here it will caused by provider errors.
 ## Failed Delivery Handling
 Pull message from Provider error queues, update with info that it failed for provider and push it to another provider, if all providers failed then forward it to error for manual handling. 
 ## Decisions
@@ -43,11 +43,13 @@ Mailgun have semi business validation rules, where they can consider request inv
 Developers should be able to get status of the message and errors associated with it.
 5. **Storing vs not storing content of a message in DB.**
 Storing content of a message can be security hazard. in case if messages will contain personal information.
-6. Lambda for monitoring and notification in case if error queue get messages - TODO
+6. **Lambda for monitoring and notification in case if error queue get messages - TODO**
 Ideally we want to notify DevOps team if providers is down, so they can redirect traffic.
+7. **Environment variables vs config file.**
+Lambda preferred method of configuration is environment variables as it can be created during lambda creation, does not require redeployment, and can be dynamically updated in AWS by other lambdas.
 ## New Provider
 You need to complete **3 steps** to add new provider:
-1. Implement provider flow with SQS and DLQ for provider message, and lambda integration component.
+1. Implement provider flow with main queue(SQS) and dead letter queue(DLQ) for provider message, and lambda integration component.
 2. **Update Failed Delivery handling** to add new provider message.
 3. Change router to enable routing between 3 providers  
 ## Security
