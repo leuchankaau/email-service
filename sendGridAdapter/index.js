@@ -29,18 +29,22 @@ function processMessage(event) {
             if (res.statusCode < 200 || res.statusCode > 299) {
                 res.on('data', function (resData) {
                     console.log('resData: ' + resData);
-                    if (res.statusCode === 400) { //if Bad Request save it to Dynamo DB
+                    if (res.statusCode == 400) { //if Bad Request save it to Dynamo DB
                         event.errors = JSON.parse(resData);
                         event.state = util.BAD_REQUEST;
                         event.statusCode = res.statusCode;
+                        util.saveItemDB(event);
                     } else {
+                        event.state = util.BAD_REQUEST;
+                        event.statusCode = res.statusCode;
+                        util.saveItemDB(event);
                         reject(resData);
                     }
                 });
             } else {
                 event.state = util.SUCCESS;
+                util.saveItemDB(event);
             }
-            util.saveItemDB(event);
         });
         req.on('error', (e) => {
             console.log('error:', e);

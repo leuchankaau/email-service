@@ -24,7 +24,7 @@ exports.handler = function (event, context, callback) {
                 "isBase64Encoded": false
             };
             callback(response, null);
-        } else if (data) {
+        } else if (data.Item) {
             console.log("data", data);
 
             const response = {
@@ -34,6 +34,13 @@ exports.handler = function (event, context, callback) {
                     state: data.Item.state,
                     errors: data.Item.errors
                 }),
+                "isBase64Encoded": false
+            };
+            callback(null, response);
+        } else {
+            const response = {
+                "statusCode": 404,
+                "body": '',
                 "isBase64Encoded": false
             };
             callback(null, response);

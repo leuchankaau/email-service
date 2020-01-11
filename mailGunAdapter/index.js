@@ -3,10 +3,9 @@ const querystring = require('querystring');
 const util = require('./util');
 
 exports.handler = async (records) => {
-  const mes = JSON.stringify(records);
-  for (const message of records.Records) {
-  return processMessage(JSON.parse(message.body));
-  }
+    for (const message of records.Records) {
+        await processMessage(JSON.parse(message.body));
+    }
 };
 
   function processMessage(event) {
@@ -31,23 +30,25 @@ exports.handler = async (records) => {
         const req = https.request(options, (res) => {
             console.log('res statusCode:', res.statusCode);
             if (res.statusCode < 200 || res.statusCode > 299) {
-                res.on('data', function (errorData) {
-                    console.log('errorData: ' + errorData);
+                res.on('data', function (resData) {
+                    console.log('resData: ' + resData);
                     if (res.statusCode == 400) { //if Bad Request save it to Dynamo DB
-                        event.errors = JSON.parse(errorData);
+                        event.errors = JSON.parse(resData);
                         event.state = util.BAD_REQUEST;
                         event.statusCode = res.statusCode;
                         util.saveItemDB(event);
-                        resolve('Success');
                     } else {
-                        reject(errorData);
+                        event.state = util.BAD_REQUEST;
+                        event.statusCode = res.statusCode;
+                        util.saveItemDB(event);
+                        reject(resData);
                     }
                 });
             } else {
-                resolve('Success');
+                event.state = util.SUCCESS;
+                util.saveItemDB(event);
             }
         });
-
         req.on('error', (e) => {
             console.log('error:', e);
             reject(e.message);

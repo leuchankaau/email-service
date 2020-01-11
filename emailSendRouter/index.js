@@ -3,19 +3,15 @@ exports.handler = function (event, context) {
 
   var queue_url = getQueue(event);
   console.log('USE queue_url:', queue_url);
-  event.uuid = uuidv4();
+  event.uuid = context.awsRequestId;
   event.state = util.ACCEPTED;
-  console.log('Generated uuid for event:', event.uuid);
+  event.retryCount = 0;
+  event.statusCode = 200;
+  event.errors = {};
+
+  console.log('Message uuid for event:', event.uuid);
   console.log('event:', JSON.stringify(event));
   util.sendMessage(event, queue_url, context);
-}
-
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16 | 0,
-      v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
 }
 
 function getQueue(event) {
