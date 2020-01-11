@@ -68,11 +68,11 @@ Need to configure MAILGUN_API_KEY environment variable, MailGun API Key.
 6. Import [API](https://github.com/leuchankaau/email-service/blob/master/api/openapi.yaml) and point POST to emailSendRouter and GET to emailStatus.
  
  Enable request body validation for POST API, and configure response body on invalid request:
-```json
+```
 {
-"message":$context.error.messageString, 
-"type": $context.error.responseType, 
-"validation":$context.error.validationErrorString
+  "message":$context.error.messageString, 
+  "type": $context.error.responseType, 
+  "validation":$context.error.validationErrorString
 }
 ``` 
  Enable parameter validation for GET API and enable lambda proxy.
