@@ -6,11 +6,13 @@ Email service API to provide an abstraction between different email service prov
 ## Table of contents
   * [Table of contents](#table-of-contents)
   * [Getting Started](#Getting-Started)
-  * [Project Structure](#Project-Structure)  
+  * [Project Structure](#Project-Structure) 
+  * [Deployment](#Deployment)  
   * [Testing](#testing)
   * [Error Handling](#error-handling)
   * [Input validation](#input-validation)
   * [Using this service](#using-this-service)
+  * [TODO](#TODO)
 
 ## Getting Started
 Architecture overview can be found [here](https://github.com/leuchankaau/email-service/blob/master/ARCHITECTURE.md)
@@ -34,8 +36,55 @@ Lambda use uuid parameter to get message status from DynamoDB and prepare it res
 Lambda can be found here [here](https://github.com/leuchankaau/email-service/blob/master/emailStatus/index.js). 
 6. Util javascript library with constants and reusable functions. 
 Util can be found here [here](https://github.com/leuchankaau/email-service/blob/master/util/util.js). 
+## Deployment
+Application ideally would have CI/CD pipeline to create required resources, API and deploy lambdas, it was too complex and I added it in TODO. 
+
+Follow manual steps required to deploy application:  
+1. Create queues for application: 
+
+DLQsendgrid.fifo and sendgrid.fifo that points failed messages to DLQsendgrid.fifo.
+sendgrid.fifo is the main Sendgrid queue from which sendgrid adapter lambda will consuming messages. 
+
+DLQmailgun.fifo and mailgun.fifo that points failed messages to DLQmailgun.fifo.
+mailgun.fifo is the main Mailgun queue from which mailgun adapter lambda will consuming messages. 
+
+FailedDelivery.fifo queue for failed messages.
+
+2. Create DynamoDB 'emails' table with uuid key. Table name referenced un util amd emailStatus lambdas.
+
+3. Deploy emailSendRouter. util.js need to be copied to EmailSendRouter folder, packed and deployed. Need DynamoDB and SQS access.
+
+Need to configure QUEUE_URL_MAILGUN (points to mailgun.fifo), QUEUE_URL_SENDGRID(points to sendgrid.fifo) and SENDGRID_PROBABILITY (float value from 0 to 1) environment variables.
+
+4. Deploy SendGridAdapter. util.js need to be copied to sendGridAdapter folder, packed and deployed. Need DynamoDB and SQS access.
+
+Need to configure SENDGRID_API_KEY environment variable, Sendgrid API Key.
+5. Deploy mailGunAdapter. util.js need to be copied to mailGunAdapter folder, packed and deployed. Need DynamoDB and SQS access.
+
+Need to configure MAILGUN_API_KEY environment variable, MailGun API Key.
+5. Deploy emailStatus. Need DynamoDB access.
+
+Need to configure MAILGUN_API_KEY environment variable, MailGun API Key.
+6. Import [API](https://github.com/leuchankaau/email-service/blob/master/api/openapi.yaml) and point POST to emailSendRouter and GET to emailStatus.
+ 
+ Enable request body validation for POST API, and configure response body on invalid request:
+```json
+{
+"message":$context.error.messageString, 
+"type": $context.error.responseType, 
+"validation":$context.error.validationErrorString
+}
+``` 
+ Enable parameter validation for GET API and enable lambda proxy.
+7. Enable SQS sendgrid.fifo trigger for sendGridAdapter with batch size of 1 
+8. Enable SQS mailgun.fifo trigger for mailGunAdapter with batch size of 1 
+9. Congratulations! Application is deployed and configured.
 ## Testing
+Postman collection for manual testing is attached [here](https://github.com/leuchankaau/email-service/blob/master/email.postman_collection.json).
 ## Error handling
 ## Input validation
 **Payload**
 Validation rules as defined in schema [here](https://app.swaggerhub.com/apis/ToliTest/EmailService/1.0.0).
+
+## TODO
+1. CI/CD pipeline to create required resources, API and deploy lambdas.
