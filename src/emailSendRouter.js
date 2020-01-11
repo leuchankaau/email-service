@@ -1,10 +1,13 @@
 const util = require('./util');
+module.exports = {
+  handler : function (event, context) {
+    processEvent(event, context, util.sendMessage);
+  },
+  processEvent: processEvent,
+  getQueue: getQueue
+};
 
-exports.handler = function (event, context) {
-  processEvent(event, context);
-}
-
-function processEvent(event, context) {
+function processEvent(event, context, sendMessageFn) {
   var queue_url = getQueue(event);
   console.log('USE queue_url:', queue_url);
   event.uuid = context.awsRequestId;
@@ -15,7 +18,7 @@ function processEvent(event, context) {
 
   console.log('Message uuid for event:', event.uuid);
   console.log('event:', JSON.stringify(event));
-  util.sendMessage(event, queue_url, context);
+  sendMessageFn(event, queue_url, context);
 }
 
 function getQueue(event) {
@@ -36,8 +39,4 @@ function getQueue(event) {
     return QUEUE_URL_MAILGUN;
   }
 
-}
-module.exports = {
-  processEvent:processEvent,
-  getQueue:getQueue
 }
