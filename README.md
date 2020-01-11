@@ -1,5 +1,5 @@
 # Email-service
-You can see swagger doc [here](https://app.swaggerhub.com/apis/ToliTest/EmailService/1.0.0) that points to running [API](https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/).
+You can see swagger doc [here](https://app.swaggerhub.com/apis/ToliTest/EmailService/1.0.1) that points to running [API](https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/).
 
 Email service API to provide an abstraction between different email service providers. Service takes managing delivery to a customer responsibility, manages load and fail-over between providers and allows delivery monitoring. Current supported providers Mailgun and SendGrid.  
 
@@ -84,7 +84,7 @@ Postman collection for manual testing is attached [here](https://github.com/leuc
 ## Error handling
 ## Input validation
 **Payload**
-Validation rules as defined in schema [here](https://app.swaggerhub.com/apis/ToliTest/EmailService/1.0.0).
-
+Validation rules as defined in schema [here](https://app.swaggerhub.com/apis/ToliTest/EmailService/1.0.1).
+## Using this service
 ## TODO
 1. CI/CD pipeline to create required resources, API and deploy lambdas.
