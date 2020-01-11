@@ -32,6 +32,8 @@ Lambda have dependency on util library [here](https://github.com/leuchankaau/ema
 5. EmailStatus lambda that  accepts GET email API call, requires a query uuid parameter.
 Lambda use uuid parameter to get message status from DynamoDB and prepare it response to developer. 
 Lambda can be found here [here](https://github.com/leuchankaau/email-service/blob/master/emailStatus/index.js). 
+6. Util javascript library with constants and reusable functions. 
+Util can be found here [here](https://github.com/leuchankaau/email-service/blob/master/util/util.js). 
 ## Testing
 ## Error handling
 ## Input validation
