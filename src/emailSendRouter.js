@@ -1,6 +1,10 @@
 const util = require('./util');
-exports.handler = function (event, context) {
 
+exports.handler = function (event, context) {
+  processEvent(event, context);
+}
+
+function processEvent(event, context) {
   var queue_url = getQueue(event);
   console.log('USE queue_url:', queue_url);
   event.uuid = context.awsRequestId;
@@ -32,4 +36,8 @@ function getQueue(event) {
     return QUEUE_URL_MAILGUN;
   }
 
+}
+module.exports = {
+  processEvent:processEvent,
+  getQueue:getQueue
 }

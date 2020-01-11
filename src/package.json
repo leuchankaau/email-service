@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "email-service",
+  "description": "Email service API to provide an abstraction between different email service providers.",
+  "version": "1.0.1",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "*",
+    "@babel/preset-env": "*",
+    "babel-jest": "*",
+    "aws-sdk-mock": "^5.0.0",
+    "jest": "^24.9.0"
+  }
+}
