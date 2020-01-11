@@ -10,21 +10,43 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.1
 servers:
-- url: https://virtserver.swaggerhub.com/ToliTest/EmailService/1.0.0
-  description: Using SwaggerHub API Auto Mocking during contract desing.
+- url: https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/
+  description: Using test AWS instance.
 tags:
-- name: admins
-  description: Secured Admin-only calls
 - name: developers
   description: Operations available to regular developers
 paths:
   /email:
+    get:
+      tags:
+      - developers
+      summary: Returns current status of email
+      description: Sends email to service, service will make sure that one of providers
+        will trigger email to customer.
+      operationId: getEmailStatus
+      parameters:
+      - name: uuid
+        in: query
+        description: UUID of accepted email request
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 75fa9038-352d-463a-a053-1d9eca975cff
+      responses:
+        "200":
+          description: Email status
+        "400":
+          description: Invalid request body
+        "404":
+          description: Not found
     post:
       tags:
       - developers
       summary: Sends email to customer
-      description: Sends email to service, service will make sure that one of providers
-        will trigger email to customer.
+      description: Sends email to service, service will deliver request to one of
+        providers, valid email will be sent to customer.
       operationId: sendEmail
       requestBody:
         description: Sends email to recipients
@@ -34,11 +56,9 @@ paths:
               $ref: '#/components/schemas/Email'
       responses:
         "200":
-          description: Email queued
-        "201":
-          description: Email queued
+          description: Email accepted, response return Email status
         "400":
-          description: invalid input, object invalid
+          description: Invalid request body
 components:
   schemas:
     Email:
@@ -99,3 +119,23 @@ components:
           minLength: 1
           type: string
           example: Body!
+    EmailStatus:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: dec1bfba-8c15-42b3-b5ff-154daa8f7c66
+        provider:
+          type: string
+          example: SENDGRID
+          enum:
+          - SENDGRID
+          - MAILGUN
+        state:
+          type: string
+          example: ACCEPTED
+          enum:
+          - ACCEPTED
+          - FAILED
+          - BAD_REQUEST
+          - SUCCESS
