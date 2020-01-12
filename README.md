@@ -102,3 +102,5 @@ Postman collection with examples is attached [here](https://github.com/leuchanka
 3. Enhance email send router to preprocess message with additional validation or message processing. Eg. Fix duplicates across to,cc and bcc which cause provider errors.
 4. Map all errors to one internal format
 5. Notification lambda that will inform if one of providers experiencing issues.
+6. Cover util.js with tests.
+7. Add integration tests
