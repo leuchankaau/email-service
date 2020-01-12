@@ -1,6 +1,6 @@
 # Email-service
 You can see swagger doc [here](https://app.swaggerhub.com/apis/ToliTest/EmailService/1.0.1) that points to running [API - get example](https://jk8ncbovj6.execute-api.us-east-2.amazonaws.com/test/email?uuid=75fa9038-352d-463a-a053-1d9eca975cff).
-
+Service have 2 methods send email and get email status.
 Email service API to provide an abstraction between different email service providers. Service takes managing delivery to a customer responsibility, manages load and fail-over between providers and allows delivery monitoring. Current supported providers Mailgun and SendGrid.  
 
 ## Table of contents
