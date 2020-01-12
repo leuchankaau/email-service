@@ -36,6 +36,7 @@ function processMessage(event, saveItemDBFn) {
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
             processResponse(res, event, saveItemDBFn);
+            resolve('done');
         });
         req.on('error', (e) => {
             console.log('error:', e);
