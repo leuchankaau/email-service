@@ -7,7 +7,7 @@ describe(`Integration test for sendGridAdapter:`, () => {
     });
 
     test(`Test successful call`, () => {
-        process.env.SENDGRID_API_KEY = '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';
+        process.env.SENDGRID_API_KEY = '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';
         const event = {
             uuid: 'eventuuid',
             from: "your@email.com",
@@ -21,6 +21,7 @@ describe(`Integration test for sendGridAdapter:`, () => {
         const saveItemDBMock = jest.fn();
         const result = lambda.processMessage(event, saveItemDBMock);
         return result.then(() => {
+            console.log('Result event:' + event)
             expect(event.statusCode).toBe(202);
             expect(event.state).toBe(util.SUCCESS);
         })
