@@ -8,9 +8,10 @@
   },
   "devDependencies": {
     "@babel/core": "*",
+    "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/preset-env": "*",
-    "babel-jest": "*",
     "aws-sdk-mock": "^5.0.0",
+    "babel-jest": "*",
     "jest": "^24.9.0"
   }
 }

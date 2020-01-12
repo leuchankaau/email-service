@@ -1,3 +1,4 @@
+'use strict';
 const util = require('./util');
 module.exports = {
   handler : function (event, context) {
