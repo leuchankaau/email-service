@@ -1,7 +1,7 @@
-const BAD_REQUEST = 'BAD_REQUEST';
-const ACCEPTED = 'ACCEPTED';
-const FAILED = 'FAILED';
-const SUCCESS = 'SUCCESS';
+const BAD_REQUEST = 'BAD_REQUEST'; //Returns in case if provider didn't accept message.
+const ACCEPTED = 'ACCEPTED';//Returns when service started processing of request.
+const FAILED = 'FAILED';//Returns when service failed to process request.
+const SUCCESS = 'SUCCESS';//Returns when service accepted message.
 const SENDGRID = 'SENDGRID';
 const MAILGUN = 'MAILGUN';
 const TABLE_NAME = 'emails';
