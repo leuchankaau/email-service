@@ -18,6 +18,7 @@ Email service API to provide an abstraction between different email service prov
 Architecture overview can be found [here](https://github.com/leuchankaau/email-service/blob/master/ARCHITECTURE.md)
 Project build using AWS Lambda, API Gateway, SQS and DynamoDB.
 ## Project Structure
+Lambdas use console logs that send logs to cloud watch, which is nice centralised way of accessing logs.
 1. API definition can be found [here](https://github.com/leuchankaau/email-service/blob/master/api/openapi.yaml). API defines contract with consumer. yaml file used to generate AWS API Gateway.
 2. EmailSendRouter lambda that accepts POST email API call, creates message and puts it to one of provider queues.
 Decision made randomly based on environment variable. Lambda records messages in DynamoDB.
