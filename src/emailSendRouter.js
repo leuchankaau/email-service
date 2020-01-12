@@ -12,6 +12,7 @@ function processEvent(event, context, sendMessageFn) {
   //Get the queue provider url, where message will be sent
   const queue_url = getQueue(event);
   console.log('USE queue_url:', queue_url);
+  //using AWS request id, should simplify finding of the issues through cloud watch
   event.uuid = context.awsRequestId;
   event.state = util.ACCEPTED;
   event.retryCount = 0;
