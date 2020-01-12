@@ -10,7 +10,8 @@ module.exports = {
     },
     processMessage: processMessage,
     processResponse: processResponse,
-    buildPayload: buildPayload
+    buildPayload: buildPayload,
+    handleErrorResponse:handleErrorResponse
 };
 
 function processMessage(event, saveItemDBFn) {
@@ -33,9 +34,7 @@ function processMessage(event, saveItemDBFn) {
 
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
-            const responseResult = processResponse(res, event, saveItemDBFn);
-            console.log('Response result :', responseResult);
-            if (responseResult && responseResult.reject) reject(responseResult.reject);
+            processResponse(res, event, saveItemDBFn);
         });
         req.on('error', (e) => {
             console.log('error:', e);
@@ -50,26 +49,28 @@ function processMessage(event, saveItemDBFn) {
 function processResponse(res, event, saveItemDBFn) {
     console.log('res statusCode:', res.statusCode);
     if (res.statusCode < 200 || res.statusCode > 299) {
-        res.on('data', function (resData) {
-            console.log('resData: ' + resData);
-            console.log('statusCode: ' + res.statusCode);
-            if (res.statusCode == 400) { //if Bad Request save it to Dynamo DB
-                event.errors = JSON.parse(resData);
-                event.state = util.BAD_REQUEST;
-                event.statusCode = res.statusCode;
-                saveItemDBFn(event);
-                return {};
-            } else {
-                event.state = util.BAD_REQUEST;
-                event.statusCode = res.statusCode;
-                saveItemDBFn(event);
-                return {reject: resData};
-            }
+        res.on('data', (resData) => {
+            handleErrorResponse(res, event, saveItemDBFn, resData);
         });
     } else {
+        event.statusCode = res.statusCode;
         event.state = util.SUCCESS;
         saveItemDBFn(event);
-        return {};
+    }
+}
+
+function handleErrorResponse(res, event, saveItemDBFn, resData) {
+    console.log('resData: ' + resData);
+    console.log('statusCode: ' + res.statusCode);
+    event.errors = JSON.parse(resData);
+    event.statusCode = res.statusCode;
+    if (res.statusCode > 399 && res.statusCode < 500) { //if Bad Request save it to Dynamo DB
+        event.state = util.BAD_REQUEST;
+        saveItemDBFn(event);
+    } else {
+        event.state = util.FAILED;
+        saveItemDBFn(event);
+        throw resData; //return message to queue and retry
     }
 }
 
