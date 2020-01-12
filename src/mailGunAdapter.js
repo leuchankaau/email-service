@@ -16,7 +16,7 @@ module.exports = {
 
 function processMessage(event, saveItemDBFn) {
     const form = buildPayload(event);
-
+    //MailGun require form submission
     const body = querystring.stringify(form);
     const contentLength = body.length;
 
@@ -33,6 +33,7 @@ function processMessage(event, saveItemDBFn) {
     };
 
     console.log('formData:', body);
+    //in retrospective it can be extracted
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
             processResponse(res, event, saveItemDBFn);
@@ -51,10 +52,12 @@ function processMessage(event, saveItemDBFn) {
 function processResponse(res, event, saveItemDBFn) {
     console.log('res statusCode:', res.statusCode);
     if (res.statusCode < 200 || res.statusCode > 299) {
+        //process error response
         res.on('data', (resData) => {
             handleErrorResponse(res, event, saveItemDBFn, resData);
         });
     } else {
+        //process successful call
         event.statusCode = res.statusCode;
         event.state = util.SUCCESS;
         saveItemDBFn(event);

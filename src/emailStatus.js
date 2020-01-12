@@ -1,3 +1,4 @@
+'use strict';
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = 'emails';
@@ -11,7 +12,7 @@ module.exports = {
 };
 
 function processRequest(event, context, callback, getFn) {
-    console.log("event", event);
+    //event.queryStringParameters.uuid injected by lambda proxy, uuid of message that need to be retrieved.
     console.log("event.queryStringParameters.uuid", event.queryStringParameters.uuid);
     const params = {
         TableName: TABLE_NAME,
@@ -19,7 +20,6 @@ function processRequest(event, context, callback, getFn) {
             "uuid": event.queryStringParameters.uuid
         }
     };
-    console.log("Call DynamoDB.");
     // Call DynamoDB to read the item from the table
     getFn(params, (err, data) => {
         processResponse(err, data, callback)
@@ -28,16 +28,19 @@ function processRequest(event, context, callback, getFn) {
 
 function processResponse(err, data, callback) {
     if (err) {
+        //Process error
         console.log("err", err);
         const response = {
             "statusCode": 500,
             "body": JSON.stringify(err),
             "isBase64Encoded": false
         };
+        //Return response to API gateway
         callback(response, null);
     } else if (data.Item) {
+        //Process retrieved item
         console.log("data", data);
-
+        //Return response to API gateway
         const response = {
             "statusCode": 200,
             "body": JSON.stringify({
@@ -49,6 +52,7 @@ function processResponse(err, data, callback) {
         };
         callback(null, response);
     } else {
+        //Process Not found
         const response = {
             "statusCode": 404,
             "body": '',

@@ -32,6 +32,7 @@ function processMessage(event, saveItemDBFn) {
         }
     };
 
+    //in retrospective it can be extracted
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
             processResponse(res, event, saveItemDBFn);
@@ -44,15 +45,18 @@ function processMessage(event, saveItemDBFn) {
         req.write(body);
         req.end();
     });
-}
+
+};
 
 function processResponse(res, event, saveItemDBFn) {
     console.log('res statusCode:', res.statusCode);
     if (res.statusCode < 200 || res.statusCode > 299) {
+        //process error response
         res.on('data', (resData) => {
             handleErrorResponse(res, event, saveItemDBFn, resData);
         });
     } else {
+        //process successful call
         event.statusCode = res.statusCode;
         event.state = util.SUCCESS;
         saveItemDBFn(event);
@@ -88,11 +92,11 @@ function buildPayload(event) {
 
 
     const toArray = [];
-    buildEmaillArray(event.to, toArray);
+    buildEmailArray(event.to, toArray);
     const ccArray = [];
-    buildEmaillArray(event.cc, ccArray);
+    buildEmailArray(event.cc, ccArray);
     const bccArray = [];
-    buildEmaillArray(event.bcc, bccArray);
+    buildEmailArray(event.bcc, bccArray);
     const persItem = {};
     if (toArray.length) {
         persItem.to = toArray;
@@ -107,7 +111,7 @@ function buildPayload(event) {
     return result;
 }
 
-function buildEmaillArray(inputArray, resultArray) {
+function buildEmailArray(inputArray, resultArray) {
     if (inputArray) {
         for (const email of inputArray) {
             resultArray.push({
