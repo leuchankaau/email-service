@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"from\": \"your@email.com\",\n  \"to\": [\n    \"your@email.com\"\n  ],\n  \"cc\": [\n    \"your@email.com\"\n  ],\n  \"bcc\": [\n    \"your@email.com\"\n  ],\n  \"subject\": \"Subject!\",\n  \"body\": \"Body!\"\n}",
+					"raw": "{\n  \"from\": \"your@email.com\",\n  \"to\": [\n    \"your@email.com\"\n  ],\n  \"cc\": [\n    \"your2@email.com\"\n  ],\n  \"bcc\": [\n    \"your3@email.com\"\n  ],\n  \"subject\": \"Subject!\",\n  \"body\": \"Body!\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
