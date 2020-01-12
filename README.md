@@ -81,6 +81,12 @@ Need to configure MAILGUN_API_KEY environment variable, MailGun API Key.
 9. Congratulations! Application is deployed and configured.
 ## Testing
 Postman collection for manual testing is attached [here](https://github.com/leuchankaau/email-service/blob/master/email.postman_collection.json).
+
+Project uses jest framework, to execute test open terminal and install npm dependencies 
+```
+npm install
+```
+Execute test with command ``` npm test ```
 ## Error handling
 ## Input validation
 **Payload**
