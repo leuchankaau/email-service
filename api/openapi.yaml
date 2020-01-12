@@ -20,7 +20,7 @@ paths:
     get:
       tags:
       - developers
-      summary: Returns current status of email
+      summary: Returns current email status
       description: Sends email to service, service will make sure that one of providers
         will trigger email to customer.
       operationId: getEmailStatus
@@ -80,8 +80,8 @@ components:
           minimum: 1
           type: array
           example:
-          - your@email.com
-          - your@email.com
+          - your1@email.com
+          - your2@email.com
           items:
             maxLength: 250
             minLength: 4
@@ -91,8 +91,8 @@ components:
           maximum: 100
           type: array
           example:
-          - your@email.com
-          - your@email.com
+          - your3@email.com
+          - your4@email.com
           items:
             maxLength: 250
             minLength: 4
@@ -102,8 +102,8 @@ components:
           maximum: 100
           type: array
           example:
-          - your@email.com
-          - your@email.com
+          - your5@email.com
+          - your6@email.com
           items:
             maxLength: 250
             minLength: 4
