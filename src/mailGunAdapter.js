@@ -77,7 +77,6 @@ function handleErrorResponse(res, event, saveItemDBFn, resData) {
 }
 
 function buildPayload(event) {
-
     let payload = {
         from: event.from,
         subject: event.subject,

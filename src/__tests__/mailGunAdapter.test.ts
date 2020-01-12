@@ -23,7 +23,7 @@ describe(`Service mailGunAdapter: Test Object building and valid error handling`
         const saveItemDBMock = jest.fn();
         const result = lambda.processMessage(event, saveItemDBMock);
         expect(https.request.mock.calls.length).toBe(1);
-         });
+    });
     test(`Test that message body to properly converted to MAILGUN format`, () => {
         process.env.MAILGUN_API_KEY = 'api=MAILGUN_API_KEY';
         const event = {
@@ -35,7 +35,7 @@ describe(`Service mailGunAdapter: Test Object building and valid error handling`
             subject: "Subject!",
             body: "Body!"
         };
-        const payload ={
+        const payload = {
             "bcc": "your@email.com,your@email.com",
             "cc": "your@email.com,your@email.com",
             "from": "your@email.com",
@@ -59,7 +59,7 @@ describe(`Service mailGunAdapter: Test Object building and valid error handling`
             body: "Body!"
         };
 
-        const payload ={
+        const payload = {
             "from": "your@email.com",
             "subject": "Subject!",
             "text": "Body!",
@@ -80,7 +80,7 @@ describe(`Service mailGunAdapter: Test Object building and valid error handling`
             body: "Body!"
         };
 
-        const payload ={
+        const payload = {
             "from": "your@email.com",
             "subject": "Subject!",
             "text": "Body!",
