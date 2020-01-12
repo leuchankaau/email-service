@@ -2,88 +2,102 @@ const https = require('https');
 const querystring = require('querystring');
 const util = require('./util');
 
-exports.handler = async (records) => {
-    for (const message of records.Records) {
-        await processMessage(JSON.parse(message.body));
-    }
+module.exports = {
+    handler: (records) => {
+        for (const message of records.Records) {
+            processMessage(JSON.parse(message.body), util.saveItemDB);
+        }
+    },
+    processMessage: processMessage,
+    processResponse: processResponse,
+    buildPayload: buildPayload,
+    handleErrorResponse: handleErrorResponse
 };
 
-  function processMessage(event) {
+function processMessage(event, saveItemDBFn) {
     const form = buildPayload(event);
 
-    const formData = querystring.stringify(form);
-    const contentLength = formData.length;
+    const body = querystring.stringify(form);
+    const contentLength = body.length;
 
-    console.log('formData:', formData);
+    const options = {
+        host: 'api.mailgun.net',
+        path: '/v3/sandboxddf393cff207464c850bf749f0f60432.mailgun.org/messages',
+        port: 443,
+        method: 'POST',
+        headers: {
+            'Content-Length': contentLength,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': make_base_auth(process.env.MAILGUN_API_KEY)
+        }
+    };
+
+    console.log('formData:', body);
     return new Promise((resolve, reject) => {
-        const options = {
-            host: 'api.mailgun.net',
-            path: '/v3/sandboxddf393cff207464c850bf749f0f60432.mailgun.org/messages',
-            port: 443,
-            method: 'POST',
-            headers: {
-                'Content-Length': contentLength,
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': make_base_auth(process.env.MAILGUN_API_KEY)
-            }
-        };
         const req = https.request(options, (res) => {
-            console.log('res statusCode:', res.statusCode);
-            if (res.statusCode < 200 || res.statusCode > 299) {
-                res.on('data', function (resData) {
-                    console.log('resData: ' + resData);
-                    if (res.statusCode == 400) { //if Bad Request save it to Dynamo DB
-                        event.errors = JSON.parse(resData);
-                        event.state = util.BAD_REQUEST;
-                        event.statusCode = res.statusCode;
-                        util.saveItemDB(event);
-                    } else {
-                        event.state = util.BAD_REQUEST;
-                        event.statusCode = res.statusCode;
-                        util.saveItemDB(event);
-                        reject(resData);
-                    }
-                });
-            } else {
-                event.state = util.SUCCESS;
-                util.saveItemDB(event);
-            }
+            processResponse(res, event, saveItemDBFn);
         });
         req.on('error', (e) => {
             console.log('error:', e);
             reject(e.message);
         });
-
         // send the request
-
-        req.write(formData);
+        req.write(body);
         req.end();
     });
 
 };
 
-function buildPayload(event) {
-    var cc;
-    if (event.cc) {
-        cc = event.cc.join();
+function processResponse(res, event, saveItemDBFn) {
+    console.log('res statusCode:', res.statusCode);
+    if (res.statusCode < 200 || res.statusCode > 299) {
+        res.on('data', (resData) => {
+            handleErrorResponse(res, event, saveItemDBFn, resData);
+        });
+    } else {
+        event.statusCode = res.statusCode;
+        event.state = util.SUCCESS;
+        saveItemDBFn(event);
     }
+}
 
-    var bcc;
-    if (event.bcc) {
-         bcc = event.bcc.join();
+function handleErrorResponse(res, event, saveItemDBFn, resData) {
+    console.log('resData: ' + resData);
+    console.log('statusCode: ' + res.statusCode);
+    event.errors = JSON.parse(resData);
+    event.statusCode = res.statusCode;
+    if (res.statusCode > 399 && res.statusCode < 500) { //if Bad Request save it to Dynamo DB
+        event.state = util.BAD_REQUEST;
+        saveItemDBFn(event);
+    } else {
+        event.state = util.FAILED;
+        saveItemDBFn(event);
+        throw resData; //return message to queue and retry
     }
-    return {
+}
+
+function buildPayload(event) {
+
+    let payload = {
         from: event.from,
-        to: event.to.join(),
-        cc: cc,
-        bcc: bcc,
         subject: event.subject,
         text: event.body
     };
+    if (event.to && event.to.length) {
+        payload.to = event.to.join();
+    }
+    if (event.cc && event.cc.length) {
+        payload.cc = event.cc.join();
+    }
+
+    if (event.bcc && event.bcc.length) {
+        payload.bcc = event.bcc.join();
+    }
+    return payload;
 }
 
 function make_base_auth(apikey) {
-    var tok = 'api:' + apikey;
-    var hash = Buffer.from(tok).toString('base64');
+    const tok = 'api:' + apikey;
+    const hash = Buffer.from(tok).toString('base64');
     return "Basic " + hash;
 }
