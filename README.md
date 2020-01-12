@@ -88,9 +88,17 @@ npm install
 ```
 Execute test with command ``` npm test ```
 ## Error handling
+Application handles 2 main types of errors, assuming that API validation passed correctly:
+1. Network/provider issues - will be handled by throwing error and returning message to a queue, which result in retry through a queue.    
+2. Business rules validation by providers - will be surfaced to customer/developer and be handled by developer/customer     
 ## Input validation
 **Payload**
 Validation rules as defined in schema [here](https://app.swaggerhub.com/apis/ToliTest/EmailService/1.0.1).
 ## Using this service
+Postman collection with examples is attached [here](https://github.com/leuchankaau/email-service/blob/master/email.postman_collection.json).
 ## TODO
 1. CI/CD pipeline to create required resources, API and deploy lambdas.
+2. Lambda to processes message from DLQ and set for reprocess. 
+3. Enhance email send router to preprocess message with additional validation or message processing. Eg. Fix duplicates across to,cc and bcc which cause provider errors.
+4. Map all errors to one internal format
+5. Notification lambda that will inform if one of providers experiencing issues.
